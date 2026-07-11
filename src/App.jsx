@@ -1,54 +1,37 @@
 import { useEffect, useState } from 'react'
+import { Routes, Route, Navigate } from 'react-router-dom'
 import { repo } from './data/repository.js'
+import { AuthProvider } from './auth/AuthContext.jsx'
+import RequireAuth from './auth/RequireAuth.jsx'
+import Layout from './components/Layout.jsx'
+import Login from './pages/Login.jsx'
+import Home from './pages/Home.jsx'
 
-// Module 1 smoke-test shell. Auth, routing, dashboards and the issue
-// workflow arrive in later modules; for now this proves the generated
-// database loads in the browser and the repository layer reads it.
+// Boots the read-only seed database once, then renders the routed app.
 export default function App() {
-  const [state, setState] = useState({ status: 'loading' })
+  const [boot, setBoot] = useState('loading')
 
   useEffect(() => {
-    repo.init()
-      .then(async () => {
-        const [sites, users, kpis, issues] = await Promise.all([
-          repo.listSites(),
-          repo.listUsers(),
-          repo.listKpiDefinitions(),
-          repo.listIssues(),
-        ])
-        setState({ status: 'ready', sites, users, kpis, issues })
-      })
-      .catch((e) => setState({ status: 'error', error: String(e) }))
+    repo.init().then(() => setBoot('ready')).catch((e) => setBoot(String(e)))
   }, [])
 
-  if (state.status === 'loading')
-    return <div className="boot"><div className="spinner" />Loading PPMS database…</div>
-  if (state.status === 'error')
-    return <div className="boot">Failed to load database<br />{state.error}</div>
+  if (boot === 'loading')
+    return <div className="boot"><div className="spinner" />Loading PPMS…</div>
+  if (boot !== 'ready')
+    return <div className="boot">Failed to load database<br />{boot}</div>
 
-  const { sites, users, kpis, issues } = state
   return (
-    <div style={{ padding: 40, maxWidth: 720, margin: '0 auto' }}>
-      <div className="demo-banner" style={{ borderRadius: 6, marginBottom: 24 }}>
-        Demo build · simulated auth &amp; workflow · not a secure production system
-      </div>
-      <h1 style={{ fontSize: 26, marginBottom: 4 }}>PPMS</h1>
-      <p className="muted" style={{ marginTop: 0 }}>
-        Power Plant Performance Monitoring &amp; Issue Management — Module 1 data layer online.
-      </p>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 12, marginTop: 24 }}>
-        {[
-          ['Sites', sites.length],
-          ['Users', users.length],
-          ['KPIs', kpis.length],
-          ['Issues (seeded)', issues.length],
-        ].map(([label, n]) => (
-          <div key={label} className="card" style={{ padding: 16 }}>
-            <div className="mono" style={{ fontSize: 28, fontWeight: 600 }}>{n}</div>
-            <div className="muted" style={{ fontSize: 12 }}>{label}</div>
-          </div>
-        ))}
-      </div>
-    </div>
+    <AuthProvider>
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route
+          path="/"
+          element={<RequireAuth><Layout /></RequireAuth>}
+        >
+          <Route index element={<Home />} />
+        </Route>
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </AuthProvider>
   )
 }
