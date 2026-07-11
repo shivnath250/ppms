@@ -1,0 +1,145 @@
+/* =========================================================================
+   PPMS — enterprise performance & issue-management theme
+   Calm, dense, tabular-first. UI: Inter · Data/metrics: IBM Plex Mono.
+   A professional operations console — deliberately NOT a neon HUD.
+   ========================================================================= */
+
+:root {
+  /* surfaces — cool slate, corporate */
+  --bg: #0f141c;
+  --bg-2: #131924;
+  --panel: #171e2b;
+  --panel-2: #1c2433;
+  --panel-3: #222c3d;
+  --border: #273140;
+  --border-soft: #202836;
+  --border-strong: #354256;
+
+  /* text */
+  --text: #e7ecf3;
+  --muted: #93a0b3;
+  --faint: #647085;
+
+  /* brand accent — professional indigo/azure */
+  --accent: #4f8cff;
+  --accent-bright: #6ea3ff;
+  --accent-dim: #2f5bb0;
+  --accent-soft: rgba(79, 140, 255, 0.12);
+
+  /* severity / status semantics */
+  --low: #4f8cff;
+  --medium: #d9a72a;
+  --high: #ef8f4a;
+  --critical: #f0524f;
+  --green: #35c07a;
+  --amber: #d9a72a;
+  --red: #f0524f;
+
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.35);
+  --shadow-md: 0 10px 28px -14px rgba(0,0,0,0.65);
+  --shadow-lg: 0 24px 60px -22px rgba(0,0,0,0.7);
+
+  --sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --mono: 'IBM Plex Mono', ui-monospace, monospace;
+
+  --r-sm: 6px; --r-md: 9px; --r-lg: 13px;
+}
+
+* { box-sizing: border-box; }
+html, body, #root { height: 100%; margin: 0; }
+body {
+  font-family: var(--sans);
+  color: var(--text);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  font-size: 14px;
+}
+
+::selection { background: rgba(79,140,255,0.28); color: #fff; }
+* { scrollbar-width: thin; scrollbar-color: var(--border-strong) transparent; }
+*::-webkit-scrollbar { width: 10px; height: 10px; }
+*::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 8px; border: 2px solid transparent; background-clip: content-box; }
+*::-webkit-scrollbar-thumb:hover { background: #45566e; background-clip: content-box; }
+
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* ---- typography helpers ---- */
+.mono { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+h1, h2, h3, h4 { margin: 0; font-weight: 700; letter-spacing: -0.2px; }
+
+/* ---- buttons ---- */
+.btn {
+  font-family: var(--sans); font-size: 13px; font-weight: 500; cursor: pointer;
+  background: var(--panel-2); color: var(--text);
+  border: 1px solid var(--border); border-radius: var(--r-sm);
+  padding: 8px 14px; transition: all .14s ease; display: inline-flex; align-items: center; gap: 7px;
+}
+.btn:hover { border-color: var(--border-strong); background: var(--panel-3); }
+.btn:active { transform: translateY(1px); }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: #06101f; font-weight: 600; }
+.btn.primary:hover { background: var(--accent-bright); }
+.btn.ghost { background: transparent; }
+.btn.danger:hover { border-color: var(--red); color: var(--red); }
+.btn:disabled { opacity: .5; cursor: not-allowed; }
+
+/* ---- cards / panels ---- */
+.card {
+  background: var(--panel); border: 1px solid var(--border);
+  border-radius: var(--r-md); box-shadow: var(--shadow-sm);
+}
+
+/* ---- form controls ---- */
+.field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+.field label { font-size: 12px; color: var(--muted); font-weight: 500; }
+input, select, textarea {
+  font-family: var(--sans); font-size: 14px; color: var(--text);
+  background: var(--panel-2); border: 1px solid var(--border); border-radius: var(--r-sm);
+  padding: 9px 11px; width: 100%;
+}
+input:focus, select:focus, textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+textarea { resize: vertical; min-height: 84px; }
+
+/* ---- badges (severity + status) ---- */
+.badge {
+  font-family: var(--mono); font-size: 11px; font-weight: 500; letter-spacing: .3px;
+  padding: 2px 8px; border-radius: 20px; border: 1px solid transparent; white-space: nowrap;
+  display: inline-flex; align-items: center; gap: 5px;
+}
+.badge.low { color: var(--low); background: rgba(79,140,255,0.12); border-color: rgba(79,140,255,0.25); }
+.badge.medium { color: var(--medium); background: rgba(217,167,42,0.13); border-color: rgba(217,167,42,0.26); }
+.badge.high { color: var(--high); background: rgba(239,143,74,0.13); border-color: rgba(239,143,74,0.28); }
+.badge.critical { color: var(--critical); background: rgba(240,82,79,0.14); border-color: rgba(240,82,79,0.3); }
+.badge.neutral { color: var(--muted); background: var(--panel-2); border-color: var(--border); }
+.badge.open { color: var(--amber); background: rgba(217,167,42,0.12); border-color: rgba(217,167,42,0.25); }
+.badge.closed { color: var(--green); background: rgba(53,192,122,0.12); border-color: rgba(53,192,122,0.25); }
+
+/* ---- tables ---- */
+.table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.table th {
+  text-align: left; font-weight: 600; color: var(--muted); font-size: 11px;
+  text-transform: uppercase; letter-spacing: .6px; padding: 10px 14px;
+  border-bottom: 1px solid var(--border); background: var(--panel-2); position: sticky; top: 0;
+}
+.table td { padding: 11px 14px; border-bottom: 1px solid var(--border-soft); }
+.table tbody tr { transition: background .1s; }
+.table tbody tr:hover { background: var(--panel-2); }
+
+/* ---- utility ---- */
+.muted { color: var(--muted); }
+.faint { color: var(--faint); }
+.row { display: flex; align-items: center; gap: 10px; }
+.spacer { flex: 1; }
+
+/* ---- boot / loader ---- */
+.boot { display: grid; place-items: center; height: 100%; gap: 16px; color: var(--muted); font-family: var(--mono); }
+.spinner { width: 28px; height: 28px; border: 3px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin .8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ---- honesty banner (demo auth notice) ---- */
+.demo-banner {
+  font-family: var(--mono); font-size: 11px; color: var(--amber);
+  background: rgba(217,167,42,0.08); border-bottom: 1px solid rgba(217,167,42,0.22);
+  padding: 5px 16px; text-align: center;
+}
