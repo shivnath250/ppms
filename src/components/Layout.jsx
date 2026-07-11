@@ -7,7 +7,7 @@ import { useAuth } from '../auth/AuthContext.jsx'
 const NAV = {
   corporate: [
     { to: '/', label: 'Dashboard', icon: '▦', end: true },
-    { label: 'Issues', icon: '❏', soon: true },
+    { to: '/issues', label: 'Issues', icon: '❏' },
     { label: 'KPI Analytics', icon: '📈', soon: true },
     { label: 'Escalations', icon: '⇧', soon: true },
     { label: 'Reports', icon: '⤓', soon: true },
@@ -15,8 +15,7 @@ const NAV = {
   ],
   plant: [
     { to: '/', label: 'Dashboard', icon: '▦', end: true },
-    { label: 'My Issues', icon: '❏', soon: true },
-    { label: 'History', icon: '🕮', soon: true },
+    { to: '/issues', label: 'My Issues', icon: '❏' },
     { label: 'Reports', icon: '⤓', soon: true },
   ],
 }

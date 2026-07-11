@@ -96,6 +96,9 @@ function listUsers() { return asleep(seed.users) }
 function getUser(id) { return asleep(seed.users.find((u) => u.id === id) || null) }
 function deptName(id) { return seed.departments.find((d) => d.id === id)?.name || id }
 function siteName(id) { return seed.sites.find((s) => s.id === id)?.name || id }
+function userName(id) { return seed.users.find((u) => u.id === id)?.name || id || '—' }
+function kpiDef(key) { return seed.kpiDefs.find((k) => k.kpi_key === key) || null }
+function equipmentLabel(id) { return seed.equipment.find((e) => e.id === id)?.label || id }
 
 // ============================================================================
 // AUTH (SIMULATED -- demo credentials, not secure)
@@ -320,6 +323,7 @@ export const repo = {
   init,
   // org
   listSites, listUnits, listDepartments, listEquipment, listUsers, getUser, deptName, siteName,
+  userName, kpiDef, equipmentLabel,
   // auth
   authenticate, getSession, setSession, canSeeIssue, canVerify,
   // kpi

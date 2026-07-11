@@ -6,6 +6,9 @@ import RequireAuth from './auth/RequireAuth.jsx'
 import Layout from './components/Layout.jsx'
 import Login from './pages/Login.jsx'
 import Home from './pages/Home.jsx'
+import IssueList from './pages/IssueList.jsx'
+import IssueDetail from './pages/IssueDetail.jsx'
+import RaiseIssue from './pages/RaiseIssue.jsx'
 
 // Boots the read-only seed database once, then renders the routed app.
 export default function App() {
@@ -29,6 +32,9 @@ export default function App() {
           element={<RequireAuth><Layout /></RequireAuth>}
         >
           <Route index element={<Home />} />
+          <Route path="issues" element={<IssueList />} />
+          <Route path="issues/new" element={<RequireAuth role="corporate"><RaiseIssue /></RequireAuth>} />
+          <Route path="issues/:id" element={<IssueDetail />} />
         </Route>
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
