@@ -5,7 +5,7 @@ import { AuthProvider } from './auth/AuthContext.jsx'
 import RequireAuth from './auth/RequireAuth.jsx'
 import Layout from './components/Layout.jsx'
 import Login from './pages/Login.jsx'
-import Home from './pages/Home.jsx'
+import Dashboard from './pages/Dashboard.jsx'
 import IssueList from './pages/IssueList.jsx'
 import IssueDetail from './pages/IssueDetail.jsx'
 import RaiseIssue from './pages/RaiseIssue.jsx'
@@ -31,7 +31,7 @@ export default function App() {
           path="/"
           element={<RequireAuth><Layout /></RequireAuth>}
         >
-          <Route index element={<Home />} />
+          <Route index element={<Dashboard />} />
           <Route path="issues" element={<IssueList />} />
           <Route path="issues/new" element={<RequireAuth role="corporate"><RaiseIssue /></RequireAuth>} />
           <Route path="issues/:id" element={<IssueDetail />} />

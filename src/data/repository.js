@@ -99,6 +99,7 @@ function siteName(id) { return seed.sites.find((s) => s.id === id)?.name || id }
 function userName(id) { return seed.users.find((u) => u.id === id)?.name || id || '—' }
 function kpiDef(key) { return seed.kpiDefs.find((k) => k.kpi_key === key) || null }
 function equipmentLabel(id) { return seed.equipment.find((e) => e.id === id)?.label || id }
+function ekeyLabel(ekey) { return seed.equipment.find((e) => e.ekey === ekey)?.label || ekey }
 
 // ============================================================================
 // AUTH (SIMULATED -- demo credentials, not secure)
@@ -323,7 +324,7 @@ export const repo = {
   init,
   // org
   listSites, listUnits, listDepartments, listEquipment, listUsers, getUser, deptName, siteName,
-  userName, kpiDef, equipmentLabel,
+  userName, kpiDef, equipmentLabel, ekeyLabel,
   // auth
   authenticate, getSession, setSession, canSeeIssue, canVerify,
   // kpi
