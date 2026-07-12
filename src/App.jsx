@@ -9,6 +9,7 @@ import Dashboard from './pages/Dashboard.jsx'
 import IssueList from './pages/IssueList.jsx'
 import IssueDetail from './pages/IssueDetail.jsx'
 import RaiseIssue from './pages/RaiseIssue.jsx'
+import KpiAnalytics from './pages/KpiAnalytics.jsx'
 
 // Boots the read-only seed database once, then renders the routed app.
 export default function App() {
@@ -35,6 +36,7 @@ export default function App() {
           <Route path="issues" element={<IssueList />} />
           <Route path="issues/new" element={<RequireAuth role="corporate"><RaiseIssue /></RequireAuth>} />
           <Route path="issues/:id" element={<IssueDetail />} />
+          <Route path="kpi" element={<KpiAnalytics />} />
         </Route>
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
