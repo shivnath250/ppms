@@ -71,6 +71,7 @@ async function init() {
     meta: Object.fromEntries(query(db, 'SELECT key,value FROM meta').map((r) => [r.key, r.value])),
   }
   loadOverlay()
+  reconcileEscalations()   // run the SLA engine once on load
 }
 
 // --- merge helpers ----------------------------------------------------------
@@ -96,7 +97,11 @@ function listUsers() { return asleep(seed.users) }
 function getUser(id) { return asleep(seed.users.find((u) => u.id === id) || null) }
 function deptName(id) { return seed.departments.find((d) => d.id === id)?.name || id }
 function siteName(id) { return seed.sites.find((s) => s.id === id)?.name || id }
-function userName(id) { return seed.users.find((u) => u.id === id)?.name || id || '—' }
+function userName(id) {
+  if (!id || id === 'system') return 'System'
+  return seed.users.find((u) => u.id === id)?.name || id
+}
+function siteRegion(siteId) { return seed.sites.find((s) => s.id === siteId)?.region || null }
 function kpiDef(key) { return seed.kpiDefs.find((k) => k.kpi_key === key) || null }
 function equipmentLabel(id) { return seed.equipment.find((e) => e.id === id)?.label || id }
 function ekeyLabel(ekey) { return seed.equipment.find((e) => e.ekey === ekey)?.label || ekey }
@@ -296,7 +301,12 @@ function markNotificationRead(id) { overlay.notifRead[id] = true; save(); return
 // SLA / ESCALATION
 // ============================================================================
 function listSlaRules() { return asleep(overlay.sla || seed.sla) }
-function updateSlaRules(rules) { overlay.sla = rules; save(); return asleep(rules) }
+function updateSlaRules(rules) {
+  overlay.sla = rules
+  save()
+  reconcileEscalations()   // new thresholds may change escalation levels
+  return asleep(rules)
+}
 
 // derive escalation level from days pending against SLA rules
 function escalationFor(issue, rules, asOf) {
@@ -307,11 +317,58 @@ function escalationFor(issue, rules, asOf) {
   return { level: hit ? hit.level : 0, rule: hit, days }
 }
 
+// who owns an issue at a given escalation level:
+// L1 -> department head (the dept engineer acts as head here)
+// L2 -> plant head · L3 -> regional performance head
+function responsibleUser(issue, level) {
+  if (level >= 3) {
+    const region = siteRegion(issue.site_id)
+    return seed.users.find((u) => u.id === `u_region_${(region || '').toLowerCase()}`)?.id || null
+  }
+  if (level === 2) return `u_${issue.site_id}_HEAD`
+  if (level === 1) return deptEngineer(issue.site_id, issue.dept_id)
+  return null
+}
+function responsibleRole(rules, level) {
+  return rules.find((r) => r.level === level)?.role || null
+}
+
+// "SLA engine": persist any newly-crossed escalation level, writing an audit
+// row + a notification to the responsible person. Idempotent — only fires when
+// the derived level exceeds what's already stored, so re-running is safe.
+function reconcileEscalations() {
+  if (!seed) return false
+  const rules = overlay.sla || seed.sla
+  const asOf = now()
+  let changed = false
+  for (const it of mergedIssues()) {
+    if (it.status === 'Closed') continue
+    const { level } = escalationFor(it, rules, asOf)
+    const stored = it.escalation_level || 0
+    if (level > stored) {
+      const role = responsibleRole(rules, level)
+      const days = Math.floor((asOf - it.created_at) / 86400)
+      overlay.issues[it.id] = { ...(overlay.issues[it.id] || {}), escalation_level: level }
+      appendAudit(it.id, 'system', 'escalation_level', stored || null, level, `Auto-escalated to L${level} — ${role} (${days} days pending)`)
+      pushNotification(responsibleUser(it, level), it.id, 'escalation',
+        `Escalation L${level}: ${it.id}`, `${it.title} — pending ${days} days, now with ${role}.`)
+      changed = true
+    }
+  }
+  if (changed) save()
+  return changed
+}
+
 // ============================================================================
 // META / VIRTUAL CLOCK / RESET
 // ============================================================================
 function getVirtualToday() { return now() }
-function setVirtualToday(epochSeconds) { overlay.virtualToday = epochSeconds; save(); return asleep(epochSeconds) }
+function setVirtualToday(epochSeconds) {
+  overlay.virtualToday = epochSeconds
+  save()
+  reconcileEscalations()   // advancing the clock may cross new SLA thresholds
+  return asleep(epochSeconds)
+}
 function getMeta() { return asleep(seed.meta) }
 
 function resetDemoData() {
@@ -324,7 +381,7 @@ export const repo = {
   init,
   // org
   listSites, listUnits, listDepartments, listEquipment, listUsers, getUser, deptName, siteName,
-  userName, kpiDef, equipmentLabel, ekeyLabel,
+  userName, kpiDef, equipmentLabel, ekeyLabel, siteRegion,
   // auth
   authenticate, getSession, setSession, canSeeIssue, canVerify,
   // kpi
@@ -334,8 +391,8 @@ export const repo = {
   createIssue, updateIssue, addResponse, verifyIssue, addComment, addAttachment, appendAudit,
   // notifications
   listNotifications, markNotificationRead,
-  // sla
-  listSlaRules, updateSlaRules, escalationFor,
+  // sla / escalation
+  listSlaRules, updateSlaRules, escalationFor, reconcileEscalations, responsibleUser, responsibleRole,
   // meta
   getVirtualToday, setVirtualToday, getMeta, resetDemoData, now,
 }

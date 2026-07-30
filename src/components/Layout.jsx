@@ -9,9 +9,9 @@ const NAV = {
     { to: '/', label: 'Dashboard', icon: '▦', end: true },
     { to: '/issues', label: 'Issues', icon: '❏' },
     { to: '/kpi', label: 'KPI Analytics', icon: '📈' },
-    { label: 'Escalations', icon: '⇧', soon: true },
+    { to: '/escalations', label: 'Escalations', icon: '⇧' },
     { label: 'Reports', icon: '⤓', soon: true },
-    { label: 'SLA Admin', icon: '⚙', soon: true },
+    { to: '/sla', label: 'SLA Admin', icon: '⚙' },
   ],
   plant: [
     { to: '/', label: 'Dashboard', icon: '▦', end: true },

@@ -380,6 +380,14 @@ textarea { resize: vertical; min-height: 84px; }
 .kpi-score-val .faint { font-size: 11px; font-weight: 400; }
 .kpi-score-dev { font-size: 11px; color: var(--faint); }
 
+/* =====================================================================
+   MODULE 6 — escalations (virtual-clock control)
+   ===================================================================== */
+.clock-ctrl { display: flex; align-items: center; gap: 8px; padding: 6px 10px; border: 1px solid var(--border); border-radius: var(--r-sm); background: var(--panel); }
+.clock-ctrl-label { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: var(--faint); }
+.clock-ctrl-date { font-size: 13px; color: var(--text); margin-right: 4px; }
+.clock-ctrl .btn { padding: 5px 9px; font-size: 12px; }
+
 @media (max-width: 820px) {
   .shell-body { grid-template-columns: 1fr; }
   .sidebar-nav { display: none; }
