@@ -1,7 +1,8 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { NavLink, Outlet, useNavigate } from 'react-router-dom'
 import { repo } from '../data/repository.js'
 import { useAuth } from '../auth/AuthContext.jsx'
+import NotificationCenter from './NotificationCenter.jsx'
 
 // Nav is data-driven so later modules just flip `soon` off / add a route.
 const NAV = {
@@ -10,6 +11,7 @@ const NAV = {
     { to: '/issues', label: 'Issues', icon: '❏' },
     { to: '/kpi', label: 'KPI Analytics', icon: '📈' },
     { to: '/escalations', label: 'Escalations', icon: '⇧' },
+    { to: '/audit', label: 'Audit Log', icon: '📜' },
     { label: 'Reports', icon: '⤓', soon: true },
     { to: '/sla', label: 'SLA Admin', icon: '⚙' },
   ],
@@ -17,6 +19,7 @@ const NAV = {
     { to: '/', label: 'Dashboard', icon: '▦', end: true },
     { to: '/issues', label: 'My Issues', icon: '❏' },
     { to: '/kpi', label: 'KPI Analytics', icon: '📈' },
+    { to: '/audit', label: 'Audit Log', icon: '📜' },
     { label: 'Reports', icon: '⤓', soon: true },
   ],
 }
@@ -29,10 +32,12 @@ export default function Layout() {
   const { user, logout, isPlantHead } = useAuth()
   const navigate = useNavigate()
   const [unread, setUnread] = useState(0)
+  const [notifOpen, setNotifOpen] = useState(false)
 
-  useEffect(() => {
+  const refreshUnread = useCallback(() => {
     repo.listNotifications(user.id).then((ns) => setUnread(ns.filter((n) => !n.read).length))
   }, [user.id])
+  useEffect(() => { refreshUnread() }, [refreshUnread])
 
   const nav = NAV[user.role] || NAV.plant
   const scope = user.role === 'corporate'
@@ -90,9 +95,12 @@ export default function Layout() {
             <div className="clock-chip mono" title="Virtual 'today' for the demo">
               {new Date(repo.getVirtualToday() * 1000).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}
             </div>
-            <button className="bell" title={`${unread} unread notifications`}>
-              🔔{unread > 0 && <span className="bell-count">{unread}</span>}
-            </button>
+            <div className="bell-wrap">
+              <button className="bell" title={`${unread} unread notifications`} onClick={() => setNotifOpen((o) => !o)}>
+                🔔{unread > 0 && <span className="bell-count">{unread}</span>}
+              </button>
+              {notifOpen && <NotificationCenter user={user} onClose={() => setNotifOpen(false)} onChanged={refreshUnread} />}
+            </div>
           </header>
           <main className="content-main">
             <Outlet />

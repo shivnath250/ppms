@@ -175,6 +175,9 @@ function listAudit(issueId) {
   const all = [...seed.audits, ...overlay.audits].filter((a) => a.entity_id === issueId)
   return asleep(all.sort((a, b) => a.ts - b.ts))
 }
+function listAllAudit() {
+  return asleep([...seed.audits, ...overlay.audits].sort((a, b) => b.ts - a.ts))
+}
 
 // --- writes -----------------------------------------------------------------
 function now() { return overlay.virtualToday || Number(seed.meta.virtual_today) || Math.floor(Date.now() / 1000) }
@@ -296,6 +299,10 @@ function listNotifications(userId, channel = 'inapp') {
   return asleep(all.sort((a, b) => b.ts - a.ts))
 }
 function markNotificationRead(id) { overlay.notifRead[id] = true; save(); return asleep(true) }
+function markAllNotificationsRead(userId) {
+  for (const n of [...seed.notifications, ...overlay.notifications]) if (n.user_id === userId) overlay.notifRead[n.id] = true
+  save(); return asleep(true)
+}
 
 // ============================================================================
 // SLA / ESCALATION
@@ -350,8 +357,11 @@ function reconcileEscalations() {
       const days = Math.floor((asOf - it.created_at) / 86400)
       overlay.issues[it.id] = { ...(overlay.issues[it.id] || {}), escalation_level: level }
       appendAudit(it.id, 'system', 'escalation_level', stored || null, level, `Auto-escalated to L${level} — ${role} (${days} days pending)`)
-      pushNotification(responsibleUser(it, level), it.id, 'escalation',
-        `Escalation L${level}: ${it.id}`, `${it.title} — pending ${days} days, now with ${role}.`)
+      const who = responsibleUser(it, level)
+      const subject = `Escalation L${level}: ${it.id}`
+      const body = `${it.title} — pending ${days} days, now with ${role}.`
+      pushNotification(who, it.id, 'escalation', subject, body)                 // in-app
+      pushNotification(who, it.id, 'escalation', `[PPMS] ${subject}`, body, 'email')   // simulated email
       changed = true
     }
   }
@@ -388,9 +398,9 @@ export const repo = {
   listKpiDefinitions, kpiSeries, latestKpis,
   // issues
   listIssues, listIssuesForUser, getIssue, listResponses, listComments, listAttachments, listAudit,
-  createIssue, updateIssue, addResponse, verifyIssue, addComment, addAttachment, appendAudit,
+  createIssue, updateIssue, addResponse, verifyIssue, addComment, addAttachment, appendAudit, listAllAudit,
   // notifications
-  listNotifications, markNotificationRead,
+  listNotifications, markNotificationRead, markAllNotificationsRead,
   // sla / escalation
   listSlaRules, updateSlaRules, escalationFor, reconcileEscalations, responsibleUser, responsibleRole,
   // meta
