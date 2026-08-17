@@ -14,6 +14,7 @@ import Escalations from './pages/Escalations.jsx'
 import SlaAdmin from './pages/SlaAdmin.jsx'
 import Notifications from './pages/Notifications.jsx'
 import AuditLog from './pages/AuditLog.jsx'
+import Reports from './pages/Reports.jsx'
 
 // Boots the read-only seed database once, then renders the routed app.
 export default function App() {
@@ -45,6 +46,7 @@ export default function App() {
           <Route path="sla" element={<RequireAuth role="corporate"><SlaAdmin /></RequireAuth>} />
           <Route path="notifications" element={<Notifications />} />
           <Route path="audit" element={<AuditLog />} />
+          <Route path="reports" element={<Reports />} />
         </Route>
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

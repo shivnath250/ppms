@@ -163,6 +163,7 @@ function listResponses(issueId) {
   const all = [...seed.responses, ...overlay.responses].filter((r) => r.issue_id === issueId)
   return asleep(all.sort((a, b) => a.created_at - b.created_at))
 }
+function allResponses() { return [...seed.responses, ...overlay.responses] }
 function listComments(issueId) {
   const all = [...seed.comments, ...overlay.comments].filter((c) => c.issue_id === issueId)
   return asleep(all.sort((a, b) => a.created_at - b.created_at))
@@ -397,7 +398,7 @@ export const repo = {
   // kpi
   listKpiDefinitions, kpiSeries, latestKpis,
   // issues
-  listIssues, listIssuesForUser, getIssue, listResponses, listComments, listAttachments, listAudit,
+  listIssues, listIssuesForUser, getIssue, listResponses, allResponses, listComments, listAttachments, listAudit,
   createIssue, updateIssue, addResponse, verifyIssue, addComment, addAttachment, appendAudit, listAllAudit,
   // notifications
   listNotifications, markNotificationRead, markAllNotificationsRead,

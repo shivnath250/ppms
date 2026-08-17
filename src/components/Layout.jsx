@@ -12,7 +12,7 @@ const NAV = {
     { to: '/kpi', label: 'KPI Analytics', icon: '📈' },
     { to: '/escalations', label: 'Escalations', icon: '⇧' },
     { to: '/audit', label: 'Audit Log', icon: '📜' },
-    { label: 'Reports', icon: '⤓', soon: true },
+    { to: '/reports', label: 'Reports', icon: '⤓' },
     { to: '/sla', label: 'SLA Admin', icon: '⚙' },
   ],
   plant: [
@@ -20,7 +20,7 @@ const NAV = {
     { to: '/issues', label: 'My Issues', icon: '❏' },
     { to: '/kpi', label: 'KPI Analytics', icon: '📈' },
     { to: '/audit', label: 'Audit Log', icon: '📜' },
-    { label: 'Reports', icon: '⤓', soon: true },
+    { to: '/reports', label: 'Reports', icon: '⤓' },
   ],
 }
 
