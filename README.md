@@ -7,8 +7,21 @@ corrective action) → verify → close, with automatic **SLA escalation** and a
 
 Built as an interview-portfolio project to demonstrate thermal-power domain knowledge (heat rate,
 boiler/turbine efficiency, APC, PLF, availability, specific coal consumption) alongside product,
-workflow, and front-end engineering. It complements a sister project (`apm-platform`) that focuses
-on sensor condition-monitoring + ML.
+workflow, and front-end engineering.
+
+**Live:** https://shivnath250.github.io/ppms/
+
+## An "Operations Excellence Platform" — two modules
+PPMS is the shell for a two-module platform:
+- **Performance & Issue Management** (this app) — KPI monitoring + the engineering issue workflow.
+- **Condition Monitoring** — a sibling app (`apm-platform`) covering sensor health, trip-distance
+  prognosis, an ML "model lab", and a simulated live feed. It's embedded in PPMS at **/monitoring**,
+  and its fleet-health highlights are surfaced on the corporate dashboard.
+  Live: https://shivnath250.github.io/apm-platform/ · Repo: https://github.com/shivnath250/apm-platform
+
+The two currently model different demo fleets and are presented as two capability modules (the
+dashboard highlights are labelled as the condition-monitoring fleet). `ml/apm_summary.py` generates
+the small health snapshot the dashboard reads, so PPMS never loads APM's full database.
 
 ## Honest framing (please read)
 
