@@ -91,17 +91,28 @@ export default function Layout() {
 
         <div className="content-col">
           <header className="topbar-app">
+            {/* mobile-only brand + nav (sidebar is hidden on narrow screens) */}
+            <span className="topbar-brand-m"><span className="login-mark sm">PPMS</span></span>
             <div className="spacer" />
             <div className="clock-chip mono" title="Virtual 'today' for the demo">
               {new Date(repo.getVirtualToday() * 1000).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}
             </div>
             <div className="bell-wrap">
-              <button className="bell" title={`${unread} unread notifications`} onClick={() => setNotifOpen((o) => !o)}>
+              <button className="bell" aria-label={`${unread} unread notifications`} title={`${unread} unread notifications`} onClick={() => setNotifOpen((o) => !o)}>
                 🔔{unread > 0 && <span className="bell-count">{unread}</span>}
               </button>
               {notifOpen && <NotificationCenter user={user} onClose={() => setNotifOpen(false)} onChanged={refreshUnread} />}
             </div>
+            <button className="mobile-signout btn ghost" onClick={() => { logout(); navigate('/login') }}>Sign out</button>
           </header>
+          <nav className="mobile-nav" aria-label="Primary">
+            {nav.filter((i) => !i.soon).map((item) => (
+              <NavLink key={item.label} to={item.to} end={item.end}
+                className={({ isActive }) => `mnav-item${isActive ? ' active' : ''}`}>
+                <span className="nav-ico" aria-hidden="true">{item.icon}</span>{item.label}
+              </NavLink>
+            ))}
+          </nav>
           <main className="content-main">
             <Outlet />
           </main>

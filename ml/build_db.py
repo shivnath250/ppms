@@ -243,7 +243,12 @@ def main():
         else:
             status = ["Open", "Under Investigation", "Action Initiated"][int(rng.integers(0, 3))]
         progress = {"Open": 0, "Under Investigation": 30, "Action Initiated": 60, "Awaiting Verification": 90, "Closed": 100}[status]
-        closed_at = created + int(rng.integers(5, int(max(6, age_days)))) * DAY if status == "Closed" else None
+        # resolution time: ~70% close within the SLA target window (target is
+        # created + 7..16d in add_issue), the rest breach — a realistic mix.
+        closed_at = None
+        if status == "Closed":
+            offset = int(rng.integers(3, 11)) if rng.random() < 0.7 else int(rng.integers(16, 28))
+            closed_at = min(created + offset * DAY, NOW - DAY)
         title = f"Unit-{unit_no} {kpi_label[kpi_key]} above tolerance" if direction == "lower" else f"Unit-{unit_no} {kpi_label[kpi_key]} below target"
         obs = f"{kpi_label[kpi_key]} at {actual} {kpi_unit[kpi_key]} vs benchmark {bench} {kpi_unit[kpi_key]} on {elabel}."
         impact = "Generation-cost / efficiency impact under assessment"

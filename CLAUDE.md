@@ -64,19 +64,22 @@ SLA rules (configurable, seeded): **3d → Dept Head · 7d → Plant Head · 15d
 Escalation level is **derived** from days-pending on read (`repo.escalationFor`). A virtual "as-of" date
 (`repo.getVirtualToday/setVirtualToday`) lets the demo show issues at every escalation level.
 
-## Roadmap — module by module (each ends demoable)
-1. ~~**Scaffold + data layer.**~~ **Shipped.** Repo, Vite/React/router, Python data layer + KPI engine,
-   `repository.js`, seed DB. Smoke screen shows seed counts.
-2. **Auth + RBAC shell.** Login page (demo credentials), session, route guards, role-aware nav; corporate sees
-   all sites, plant users see own site/department; persistent demo-auth banner.
-3. **Issue lifecycle (the heart).** List + detail, raise-issue (corporate), respond w/ RCA+actions+attachments+
-   progress (plant), verify → close / request-info / reopen (corporate). Audit on every change.
-4. **Dashboards** (corporate + plant).
-5. **KPI analytics** — benchmark-vs-actual trend charts + "Raise issue from this deviation".
-6. **Escalation engine + dashboard** (SLA config, overdue/level/days/responsible, auto-escalation).
-7. **Notifications + audit-trail viewer** (in-app centre, simulated email outbox, immutable timeline).
-8. **Reports** — Excel (xlsx) + PDF (jspdf).
-9. **Polish** — responsive, a11y, README + interview talking points.
+## Roadmap — all 9 modules SHIPPED
+1. ~~**Scaffold + data layer.**~~ Repo, Vite/React/router, Python data layer + KPI engine, `repository.js`, seed DB.
+2. ~~**Auth + RBAC shell.**~~ Login (demo creds), session, route guards, role-aware nav + mobile nav, demo banner.
+3. ~~**Issue lifecycle.**~~ List + detail, raise-issue, respond (RCA/actions/attachments/progress), verify → close /
+   request-info / reopen. Audit on every change.
+4. ~~**Dashboards**~~ (corporate + plant): site distribution, aging, SLA compliance, resolution analytics,
+   equipment trends, escalations, KPI heat map / plant pending+due+closed.
+5. ~~**KPI analytics**~~ — benchmark-vs-actual trends + "Raise issue from this deviation" prefill.
+6. ~~**Escalation engine + dashboard**~~ — configurable SLA rules, derived levels, responsible-person routing
+   (dept/plant/regional), virtual as-of clock, auto-escalation writes audit + notifies.
+7. ~~**Notifications + audit viewer**~~ — bell dropdown, in-app + simulated email outbox, immutable audit page.
+8. ~~**Reports**~~ — 6 report types, Excel (xlsx) + PDF (jspdf) export.
+9. ~~**Polish**~~ — responsive + mobile nav, aria labels, realistic SLA-compliance seeding (~62%), README.
+
+Data build reproducible via `python ml/build_db.py` (this project's DB is NOT pinned — safe to regenerate,
+unlike apm-platform's).
 
 ## Working preferences
 - Prefer browser-side simulation over real backend infra (free hosting, no maintenance).
