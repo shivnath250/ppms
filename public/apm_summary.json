@@ -1,0 +1,101 @@
+{
+  "generatedAt": "2026-08-17",
+  "source": "apm-platform (condition-monitoring module)",
+  "fleetHealth": 91.7,
+  "counts": {
+    "total": 286,
+    "alarms": 12,
+    "warns": 15,
+    "healthy": 259
+  },
+  "top": [
+    {
+      "eid": "MAH-U1-CW-CW_PUMP-1",
+      "name": "CW Pump 1",
+      "plant": "Mahan",
+      "plantId": "MAH",
+      "health": 24.8,
+      "status": "alarm",
+      "worstLabel": "DE Bearing Temp",
+      "worstValue": 82.1,
+      "worstUnit": "degC"
+    },
+    {
+      "eid": "UDU-U1-TG-BFP-1",
+      "name": "Boiler Feed Pump 1",
+      "plant": "Udupi",
+      "plantId": "UDU",
+      "health": 29.4,
+      "status": "alarm",
+      "worstLabel": "Vibration X",
+      "worstValue": 4.7,
+      "worstUnit": "mm/s"
+    },
+    {
+      "eid": "KAW-U1-TG-TURBINE-1",
+      "name": "Steam Turbine 1",
+      "plant": "Kawai",
+      "plantId": "KAW",
+      "health": 31.1,
+      "status": "alarm",
+      "worstLabel": "Shaft Vibration",
+      "worstValue": 73.1,
+      "worstUnit": "um"
+    },
+    {
+      "eid": "RGH-U1-TG-GENERATOR-1",
+      "name": "Generator 1",
+      "plant": "Raigarh",
+      "plantId": "RGH",
+      "health": 40.6,
+      "status": "alarm",
+      "worstLabel": "Vibration",
+      "worstValue": 64.9,
+      "worstUnit": "um"
+    },
+    {
+      "eid": "UDU-U2-BLR-MILL-2",
+      "name": "Coal Mill 2",
+      "plant": "Udupi",
+      "plantId": "UDU",
+      "health": 40.8,
+      "status": "alarm",
+      "worstLabel": "Vibration",
+      "worstValue": 6.4,
+      "worstUnit": "mm/s"
+    },
+    {
+      "eid": "MUN-U2-TG-BFP-1",
+      "name": "Boiler Feed Pump 1",
+      "plant": "Mundra",
+      "plantId": "MUN",
+      "health": 45.3,
+      "status": "alarm",
+      "worstLabel": "Vibration X",
+      "worstValue": 4.1,
+      "worstUnit": "mm/s"
+    },
+    {
+      "eid": "MUN-U1-BLR-FD_FAN-1",
+      "name": "FD Fan 1",
+      "plant": "Mundra",
+      "plantId": "MUN",
+      "health": 46.8,
+      "status": "alarm",
+      "worstLabel": "NDE Vibration X",
+      "worstValue": 6.7,
+      "worstUnit": "mm/s"
+    },
+    {
+      "eid": "MUN-U1-BLR-MILL-1",
+      "name": "Coal Mill 1",
+      "plant": "Mundra",
+      "plantId": "MUN",
+      "health": 51.1,
+      "status": "alarm",
+      "worstLabel": "Vibration",
+      "worstValue": 5.4,
+      "worstUnit": "mm/s"
+    }
+  ]
+}

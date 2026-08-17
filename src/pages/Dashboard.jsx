@@ -46,6 +46,47 @@ function IssueMiniList({ items, empty, right }) {
   )
 }
 
+// APM condition-monitoring highlights card (cross-module tie-in on the dashboard)
+function ApmHighlights({ apm }) {
+  return (
+    <div className="card apm-card">
+      <div className="apm-head">
+        <div>
+          <div className="dash-card-title">Fleet Condition Monitoring <span className="apm-tag">APM module</span></div>
+          <div className="dash-card-sub">Sensor-health snapshot · {apm.counts.total} equipment monitored</div>
+        </div>
+        <Link className="btn primary" to="/monitoring">Open module →</Link>
+      </div>
+      <div className="apm-body">
+        <div className="apm-stats">
+          <div className="apm-fleet">
+            <div className={`apm-fleet-val mono ${apm.fleetHealth >= 80 ? 'healthy-t2' : apm.fleetHealth >= 60 ? 'warn-t2' : 'alarm-t2'}`}>{apm.fleetHealth}%</div>
+            <div className="stat-label">Fleet health</div>
+          </div>
+          <div className="apm-counts">
+            <div><b className="mono critical-txt">{apm.counts.alarms}</b> alarms</div>
+            <div><b className="mono high-txt">{apm.counts.warns}</b> warnings</div>
+            <div><b className="mono muted">{apm.counts.healthy}</b> healthy</div>
+          </div>
+        </div>
+        <div className="apm-list">
+          <div className="section-label" style={{ margin: '0 0 8px' }}>Equipment needing attention</div>
+          <div className="mini-list">
+            {apm.top.slice(0, 5).map((e) => (
+              <Link key={e.eid} to="/monitoring" className="mini-row">
+                <span className={`sev-dot ${e.status === 'alarm' ? 'critical' : 'high'}`} />
+                <span className="mini-title">{e.name}</span>
+                <span className="mini-meta">{e.plant} · {e.worstLabel} {e.worstValue}{e.worstUnit || ''}</span>
+                <span className="mini-right mono">{e.health}%</span>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 // ============================================================================
 // CORPORATE
 // ============================================================================
@@ -98,6 +139,12 @@ function CorporateDashboard({ user, issues }) {
     () => (rules.length ? M.escalated(issues, repo.escalationFor, rules, now) : []),
     [issues, rules, now])
 
+  // APM condition-monitoring highlights (snapshot from the sibling module)
+  const [apm, setApm] = useState(null)
+  useEffect(() => {
+    fetch(`${import.meta.env.BASE_URL}apm_summary.json`).then((r) => r.ok ? r.json() : null).then(setApm).catch(() => setApm(null))
+  }, [])
+
   const siteData = m.bySite.map((r) => ({ name: repo.siteName(r.site_id), Low: r.Low, Medium: r.Medium, High: r.High, Critical: r.Critical }))
   const deptData = m.byDept.map((r) => ({ name: repo.deptName(r.dept_id).replace(/ \(.*\)/, ''), value: r.count }))
   const equipData = m.equip.map((r) => ({ name: repo.ekeyLabel(r.type), value: r.count }))
@@ -123,6 +170,8 @@ function CorporateDashboard({ user, issues }) {
         { label: 'SLA compliance', value: `${m.sla.pct}%`, tone: 'green' },
         { label: 'Avg resolution', value: `${m.res.avgDays.toFixed(1)}d`, tone: 'accent' },
       ]} />
+
+      {apm && <ApmHighlights apm={apm} />}
 
       <div className="dash-grid">
         <BarCard title="Open issues by site" subtitle="stacked by severity" data={siteData} xKey="name"

@@ -437,6 +437,25 @@ textarea { resize: vertical; min-height: 84px; }
 .report-view-title { font-size: 16px; font-weight: 700; }
 .report-table th, .report-table td { white-space: nowrap; }
 
+/* condition-monitoring (embedded APM module) */
+.monitoring { display: flex; flex-direction: column; min-height: calc(100vh - 200px); }
+.monitoring-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 14px; flex-wrap: wrap; }
+.monitoring-frame-wrap { position: relative; flex: 1; min-height: 540px; border: 1px solid var(--border); border-radius: var(--r-md); overflow: hidden; background: var(--bg-2); box-shadow: var(--shadow-sm); }
+.monitoring-frame { width: 100%; height: 100%; min-height: 540px; border: 0; display: block; transition: opacity .3s ease; }
+.monitoring-loading { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; gap: 12px; color: var(--muted); font-family: var(--mono); font-size: 13px; }
+
+/* APM highlights card on the dashboard (cross-module tie-in) */
+.apm-card { padding: 18px 20px; margin-bottom: 18px; border-left: 3px solid var(--accent); }
+.apm-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 14px; margin-bottom: 16px; flex-wrap: wrap; }
+.apm-tag { font-family: var(--mono); font-size: 10px; letter-spacing: .5px; text-transform: uppercase; color: var(--accent); border: 1px solid var(--accent-dim); border-radius: 10px; padding: 2px 7px; margin-left: 8px; vertical-align: middle; }
+.apm-body { display: grid; grid-template-columns: 210px 1fr; gap: 22px; align-items: start; }
+.apm-stats { display: flex; flex-direction: column; gap: 16px; }
+.apm-fleet-val { font-size: 40px; font-weight: 700; letter-spacing: -1.5px; line-height: 1; }
+.apm-counts { display: flex; flex-direction: column; gap: 7px; font-size: 13px; color: var(--muted); }
+.apm-counts b { font-size: 15px; margin-right: 5px; }
+.healthy-t2 { color: var(--green); } .warn-t2 { color: var(--amber); } .alarm-t2 { color: var(--red); }
+@media (max-width: 720px) { .apm-body { grid-template-columns: 1fr; } }
+
 /* mobile nav strip (hidden on desktop; shown when the sidebar collapses) */
 .topbar-brand-m, .mobile-nav, .mobile-signout { display: none; }
 
