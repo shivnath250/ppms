@@ -3,3 +3,7 @@ dist
 *.local
 .DS_Store
 ml/__pycache__
+
+# personal working notes — keep out of the public repo
+CLAUDE.md
+.claude/
