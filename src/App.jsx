@@ -16,6 +16,7 @@ import Notifications from './pages/Notifications.jsx'
 import AuditLog from './pages/AuditLog.jsx'
 import Reports from './pages/Reports.jsx'
 import Monitoring from './pages/Monitoring.jsx'
+import Impact from './pages/Impact.jsx'
 
 // Boots the read-only seed database once, then renders the routed app.
 export default function App() {
@@ -49,6 +50,7 @@ export default function App() {
           <Route path="audit" element={<AuditLog />} />
           <Route path="reports" element={<Reports />} />
           <Route path="monitoring" element={<Monitoring />} />
+          <Route path="impact" element={<Impact />} />
         </Route>
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

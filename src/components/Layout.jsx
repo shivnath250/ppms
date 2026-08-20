@@ -9,6 +9,7 @@ const NAV = {
   corporate: [
     { to: '/', label: 'Dashboard', icon: '▦', end: true },
     { to: '/monitoring', label: 'Condition Monitoring', icon: '🩺' },
+    { to: '/impact', label: 'Impact & Risk', icon: '💹' },
     { to: '/issues', label: 'Issues', icon: '❏' },
     { to: '/kpi', label: 'KPI Analytics', icon: '📈' },
     { to: '/escalations', label: 'Escalations', icon: '⇧' },
@@ -19,6 +20,7 @@ const NAV = {
   plant: [
     { to: '/', label: 'Dashboard', icon: '▦', end: true },
     { to: '/monitoring', label: 'Condition Monitoring', icon: '🩺' },
+    { to: '/impact', label: 'Impact & Risk', icon: '💹' },
     { to: '/issues', label: 'My Issues', icon: '❏' },
     { to: '/kpi', label: 'KPI Analytics', icon: '📈' },
     { to: '/audit', label: 'Audit Log', icon: '📜' },

@@ -23,6 +23,17 @@ The two currently model different demo fleets and are presented as two capabilit
 dashboard highlights are labelled as the condition-monitoring fleet). `ml/apm_summary.py` generates
 the small health snapshot the dashboard reads, so PPMS never loads APM's full database.
 
+### The technical bridge — Performance Impact & Risk (`/impact`)
+The modules are also linked *analytically*: every equipment condition issue from the monitoring module
+is **projected into plant-performance and economic terms** — APC penalty, heat-rate/fuel cost, boiler/
+turbine efficiency loss, **unit-trip probability**, avoidable maintenance escalation, extra CO₂, and
+total **₹ / MU at risk** — turning "FD Fan at 46% health" into "≈ ₹X/day at risk, Y% trip probability".
+Sensitivities are simplified, cited engineering rules of thumb (back pressure → heat rate ~10–14
+kcal/kWh per kPa; fans ~60–70% of APC; boiler efficiency ~1% per ~20 °C flue-gas temp), with editable
+economic assumptions so the numbers stay transparent. `ml/apm_impact.py` extracts the condition facts;
+`src/lib/impact.js` + `src/lib/plantEconomics.js` do the projection; the `/impact` page ranks the fleet
+by ₹ at risk and can pre-fill a PPMS performance issue from any row.
+
 ## Honest framing (please read)
 
 This is a **front-end demo with a simulated backend**, deliberately kept serverless so it can be

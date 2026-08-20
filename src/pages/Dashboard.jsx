@@ -5,6 +5,8 @@ import { useAuth } from '../auth/AuthContext.jsx'
 import { SEV_CLASS, statusClass, fmtDateShort, daysBetween } from '../lib/format.js'
 import * as M from '../lib/metrics.js'
 import { BarCard, HBarCard, DonutCard, Card, SEV_COLORS, CHART } from '../components/charts.jsx'
+import { getEconomics, fmtINR } from '../lib/plantEconomics.js'
+import { fleetImpact } from '../lib/impact.js'
 
 export default function Dashboard() {
   const { user, isCorporate } = useAuth()
@@ -48,6 +50,12 @@ function IssueMiniList({ items, empty, right }) {
 
 // APM condition-monitoring highlights card (cross-module tie-in on the dashboard)
 function ApmHighlights({ apm }) {
+  const [risk, setRisk] = useState(null)
+  useEffect(() => {
+    fetch(`${import.meta.env.BASE_URL}apm_impact.json`).then((r) => r.ok ? r.json() : null).then((d) => {
+      if (d) setRisk(fleetImpact(d.issues, getEconomics()))
+    }).catch(() => {})
+  }, [])
   return (
     <div className="card apm-card">
       <div className="apm-head">
@@ -55,7 +63,10 @@ function ApmHighlights({ apm }) {
           <div className="dash-card-title">Fleet Condition Monitoring <span className="apm-tag">APM module</span></div>
           <div className="dash-card-sub">Sensor-health snapshot · {apm.counts.total} equipment monitored</div>
         </div>
-        <Link className="btn primary" to="/monitoring">Open module →</Link>
+        <div className="row" style={{ gap: 8 }}>
+          {risk && <Link className="btn" to="/impact" title="Projected performance & cost impact">{fmtINR(risk.totalPerDay)}/day at risk →</Link>}
+          <Link className="btn primary" to="/monitoring">Open module →</Link>
+        </div>
       </div>
       <div className="apm-body">
         <div className="apm-stats">
