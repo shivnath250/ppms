@@ -454,6 +454,8 @@ textarea { resize: vertical; min-height: 84px; }
 .apm-fleet-val { font-size: 40px; font-weight: 700; letter-spacing: -1.5px; line-height: 1; }
 .apm-counts { display: flex; flex-direction: column; gap: 7px; font-size: 13px; color: var(--muted); }
 .apm-counts b { font-size: 15px; margin-right: 5px; }
+.apm-list-head { display: flex; align-items: baseline; justify-content: space-between; margin: 0 0 8px; gap: 12px; }
+.apm-list-col { font-family: var(--mono); font-size: 10px; letter-spacing: 1.2px; text-transform: uppercase; color: var(--faint); }
 .healthy-t2 { color: var(--green); } .warn-t2 { color: var(--amber); } .alarm-t2 { color: var(--red); }
 @media (max-width: 720px) { .apm-body { grid-template-columns: 1fr; } }
 

@@ -81,7 +81,10 @@ function ApmHighlights({ apm }) {
           </div>
         </div>
         <div className="apm-list">
-          <div className="section-label" style={{ margin: '0 0 8px' }}>Equipment needing attention</div>
+          <div className="apm-list-head">
+            <span className="section-label" style={{ margin: 0 }}>Equipment needing attention</span>
+            <span className="apm-list-col">Health</span>
+          </div>
           <div className="mini-list">
             {apm.top.slice(0, 5).map((e) => (
               <Link key={e.eid} to="/monitoring" className="mini-row">
