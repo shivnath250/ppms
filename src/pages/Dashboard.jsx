@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { repo } from '../data/repository.js'
 import { useAuth } from '../auth/AuthContext.jsx'
 import { SEV_CLASS, statusClass, fmtDateShort, daysBetween } from '../lib/format.js'
@@ -156,13 +156,17 @@ function CorporateDashboard({ user, issues }) {
     fetch(`${import.meta.env.BASE_URL}apm_summary.json`).then((r) => r.ok ? r.json() : null).then(setApm).catch(() => setApm(null))
   }, [])
 
-  const siteData = m.bySite.map((r) => ({ name: repo.siteName(r.site_id), Low: r.Low, Medium: r.Medium, High: r.High, Critical: r.Critical }))
-  const deptData = m.byDept.map((r) => ({ name: repo.deptName(r.dept_id).replace(/ \(.*\)/, ''), value: r.count }))
+  const navigate = useNavigate()
+  const siteData = m.bySite.map((r) => ({ name: repo.siteName(r.site_id), site_id: r.site_id, Low: r.Low, Medium: r.Medium, High: r.High, Critical: r.Critical }))
+  const deptData = m.byDept.map((r) => ({ name: repo.deptName(r.dept_id).replace(/ \(.*\)/, ''), dept_id: r.dept_id, value: r.count }))
+  const agingData = m.aging.map((a) => ({ bucket: a.bucket, value: a.count }))
   const equipData = m.equip.map((r) => ({ name: repo.ekeyLabel(r.type), value: r.count }))
   const slaData = [
     { name: 'On time', value: m.sla.onTime, color: CHART.green },
     { name: 'Breached', value: m.sla.breached, color: CHART.critical },
   ]
+  const AGE_PARAM = { '0–3d': '0-3', '3–7d': '3-7', '7–15d': '7-15', '>15d': '15+' }
+  const toIssues = (params) => navigate(`/issues?${new URLSearchParams({ view: 'active', ...params }).toString()}`)
 
   return (
     <div>
@@ -185,13 +189,16 @@ function CorporateDashboard({ user, issues }) {
       {apm && <ApmHighlights apm={apm} />}
 
       <div className="dash-grid">
-        <BarCard title="Open issues by site" subtitle="stacked by severity" data={siteData} xKey="name"
+        <BarCard title="Open issues by site" subtitle="stacked by severity — click a segment" data={siteData} xKey="name"
           bars={[
             { key: 'Low', color: SEV_COLORS.Low }, { key: 'Medium', color: SEV_COLORS.Medium },
             { key: 'High', color: SEV_COLORS.High }, { key: 'Critical', color: SEV_COLORS.Critical, last: true },
-          ]} />
-        <BarCard title="Issue aging" subtitle="open issues by age" data={m.aging} xKey="bucket" color={CHART.high} />
-        <BarCard title="Open issues by department" data={deptData} xKey="name" />
+          ]}
+          onBarClick={(entry, sev) => toIssues({ severity: sev, site: entry.site_id })} />
+        <BarCard title="Issue aging" subtitle="open issues by age" data={agingData} xKey="bucket" color={CHART.high}
+          onBarClick={(entry) => toIssues({ age: AGE_PARAM[entry.bucket] || 'all' })} />
+        <BarCard title="Open issues by department" data={deptData} xKey="name"
+          onBarClick={(entry) => toIssues({ dept: entry.dept_id })} />
         <DonutCard title="SLA compliance" subtitle={`${m.sla.total} closed with a target`} data={slaData}
           centerValue={`${m.sla.pct}%`} centerLabel="on time" />
         <HBarCard title="Top equipment by issues" subtitle="all statuses" data={equipData} />

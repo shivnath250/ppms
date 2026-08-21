@@ -321,6 +321,7 @@ textarea { resize: vertical; min-height: 84px; }
 .dash-card-head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 12px; gap: 10px; }
 .dash-card-title { font-size: 14px; font-weight: 600; }
 .dash-card-sub { font-size: 11px; color: var(--faint); font-family: var(--mono); }
+.chart-hint { font-size: 10.5px; color: var(--faint); text-align: right; margin-top: 4px; font-style: italic; }
 
 /* recharts text legibility */
 .recharts-cartesian-axis-tick text, .recharts-legend-item-text { fill: var(--muted) !important; }

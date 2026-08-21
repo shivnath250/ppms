@@ -1,17 +1,35 @@
 import { useEffect, useMemo, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { repo } from '../data/repository.js'
 import { useAuth } from '../auth/AuthContext.jsx'
 import { SEV_CLASS, statusClass, STATUSES, SEVERITIES, fmtDateShort, daysBetween } from '../lib/format.js'
 
+const inAgeBucket = (days, age) => (
+  age === '0-3' ? days < 3 : age === '3-7' ? days >= 3 && days < 7
+    : age === '7-15' ? days >= 7 && days < 15 : age === '15+' ? days >= 15 : true
+)
+
 export default function IssueList() {
   const { user, isCorporate } = useAuth()
   const navigate = useNavigate()
+  const [sp] = useSearchParams()
   const [issues, setIssues] = useState(null)
-  const [f, setF] = useState({ q: '', status: 'all', severity: 'all', site: 'all', dept: 'all', view: 'active' })
+  const [f, setF] = useState({
+    q: '', status: sp.get('status') || 'all', severity: sp.get('severity') || 'all',
+    site: sp.get('site') || 'all', dept: sp.get('dept') || 'all',
+    view: sp.get('view') || 'active', age: sp.get('age') || 'all',
+  })
   const now = repo.getVirtualToday()
 
   useEffect(() => { repo.listIssuesForUser(user).then(setIssues) }, [user])
+  // keep filters in sync if the user arrives from a dashboard chart while already here
+  useEffect(() => {
+    setF((s) => ({
+      ...s, status: sp.get('status') || 'all', severity: sp.get('severity') || 'all',
+      site: sp.get('site') || 'all', dept: sp.get('dept') || 'all',
+      view: sp.get('view') || s.view, age: sp.get('age') || 'all',
+    }))
+  }, [sp])
 
   const sites = useMemo(() => (issues ? [...new Set(issues.map((i) => i.site_id))] : []), [issues])
   const depts = useMemo(() => (issues ? [...new Set(issues.map((i) => i.dept_id))] : []), [issues])
@@ -25,13 +43,14 @@ export default function IssueList() {
       if (f.severity !== 'all' && i.severity !== f.severity) return false
       if (f.site !== 'all' && i.site_id !== f.site) return false
       if (f.dept !== 'all' && i.dept_id !== f.dept) return false
+      if (f.age && f.age !== 'all' && !inAgeBucket((now - i.created_at) / 86400, f.age)) return false
       if (f.q) {
         const hay = `${i.id} ${i.title} ${i.observation}`.toLowerCase()
         if (!hay.includes(f.q.toLowerCase())) return false
       }
       return true
     }).sort((a, b) => b.created_at - a.created_at)
-  }, [issues, f])
+  }, [issues, f, now])
 
   if (!issues) return <div className="muted">Loading…</div>
 
@@ -65,6 +84,13 @@ export default function IssueList() {
         <select value={f.severity} onChange={set('severity')}>
           <option value="all">All severity</option>
           {SEVERITIES.map((s) => <option key={s} value={s}>{s}</option>)}
+        </select>
+        <select value={f.age} onChange={set('age')}>
+          <option value="all">All ages</option>
+          <option value="0-3">0–3 days</option>
+          <option value="3-7">3–7 days</option>
+          <option value="7-15">7–15 days</option>
+          <option value="15+">&gt;15 days</option>
         </select>
         {isCorporate && sites.length > 1 && (
           <select value={f.site} onChange={set('site')}>

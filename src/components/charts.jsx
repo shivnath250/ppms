@@ -25,7 +25,9 @@ export function Card({ title, subtitle, children, wide }) {
 }
 
 // vertical bar chart from [{name, value}] or stacked severity rows
-export function BarCard({ title, subtitle, data, xKey, bars, color = CHART.accent, height = 210 }) {
+export function BarCard({ title, subtitle, data, xKey, bars, color = CHART.accent, height = 210, onBarClick, hint }) {
+  const clickable = !!onBarClick
+  const fire = (key) => (entry) => onBarClick?.(entry?.payload || entry, key)
   return (
     <Card title={title} subtitle={subtitle}>
       <ResponsiveContainer width="100%" height={height}>
@@ -35,11 +37,14 @@ export function BarCard({ title, subtitle, data, xKey, bars, color = CHART.accen
           <YAxis tick={{ fill: CHART.axis, fontSize: 11 }} allowDecimals={false} />
           <Tooltip contentStyle={tip} labelStyle={{ color: '#93a0b3' }} cursor={{ fill: 'rgba(255,255,255,0.03)' }} />
           {bars
-            ? bars.map((b) => <Bar key={b.key} dataKey={b.key} stackId="s" fill={b.color} radius={b.last ? [3, 3, 0, 0] : 0} />)
-            : <Bar dataKey="value" fill={color} radius={[3, 3, 0, 0]} maxBarSize={46} />}
+            ? bars.map((b) => <Bar key={b.key} dataKey={b.key} stackId="s" fill={b.color} radius={b.last ? [3, 3, 0, 0] : 0}
+                cursor={clickable ? 'pointer' : undefined} onClick={clickable ? fire(b.key) : undefined} />)
+            : <Bar dataKey="value" fill={color} radius={[3, 3, 0, 0]} maxBarSize={46}
+                cursor={clickable ? 'pointer' : undefined} onClick={clickable ? fire() : undefined} />}
           {bars && <Legend wrapperStyle={{ fontSize: 11 }} />}
         </BarChart>
       </ResponsiveContainer>
+      {(hint || clickable) && <div className="chart-hint">{hint || 'Click a bar to see those issues'}</div>}
     </Card>
   )
 }
