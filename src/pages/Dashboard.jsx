@@ -211,7 +211,10 @@ function CorporateDashboard({ user, issues }) {
         </Card>
       </div>
 
-      <div className="section-label" style={{ marginTop: 28 }}>Plant performance heat map — latest KPI vs benchmark</div>
+      <div className="section-label" style={{ marginTop: 28 }}>Plant performance heat map — latest daily KPI vs benchmark</div>
+      <p className="muted" style={{ fontSize: 12, margin: '-6px 0 12px' }}>
+        Each cell is the <b>most recent daily value</b> (24-hour average), averaged across the site's units, as of the virtual date {fmtDateShort(now)}. Daily KPI series span the last 120 days.
+      </p>
       {!heat ? <div className="muted">Building heat map…</div> : (
         <div className="card" style={{ overflowX: 'auto', padding: 0 }}>
           <table className="heat">
